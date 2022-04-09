@@ -231,6 +231,7 @@ public class CommandExecutor {
 
     public class Save implements Command{
         public void run(String arg){
+            if(fileWorker.getPath()==null) throw new CommandException("cannot save collection");
             if (collection.getCollection().isEmpty()) System.out.println("collection is empty");
             if(!fileWorker.write(collection.serializeCollection())) throw new CommandException("cannot save collection");
             history.add("save");

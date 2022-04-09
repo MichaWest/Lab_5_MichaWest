@@ -13,7 +13,7 @@ public class Main {
         System.setOut(new PrintStream(System.out, true, "UTF-8"));
         FileWorker fileWorker = new FileWorker();
         PersonCollection personCollection = new PersonCollection();
-        String path = "MICHELL";
+        String path = "MICHELLE";
         try {
             fileWorker.setPath(path);
         }catch(NullPointerException e){

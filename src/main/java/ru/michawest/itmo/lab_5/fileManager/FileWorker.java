@@ -24,15 +24,11 @@ public class FileWorker {
             if(countGroup(matcher)>1){
                 System.out.println("Данная переменная окружения содержит больше одного путя");
             }
-            pattern = Pattern.compile("xml");
-            matcher = pattern.matcher(way);
-            if(!matcher.find()){
-                System.out.println("Вы указали путь введущий не к xml файлу");
-            }
+            this.path = way;
         }catch(SecurityException e){
             System.out.println(e.getMessage());
+            this.path = "";
         }
-        this.path = way;
     }
 
     public String read(){
@@ -53,9 +49,14 @@ public class FileWorker {
             str = total.toString();
             reader.close();
         }catch(IOException e){
+            this.path = null;
             System.out.println(e.getMessage());
         }
         return str;
+    }
+
+    public String getPath(){
+        return path;
     }
 
     private static int countGroup(Matcher r){
