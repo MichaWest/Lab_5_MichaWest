@@ -3,28 +3,31 @@ package ru.michawest.itmo.lab_5.inputManager;
 import ru.michawest.itmo.lab_5.commands.CommandWrapper;
 import ru.michawest.itmo.lab_5.data.*;
 import ru.michawest.itmo.lab_5.exceptions.*;
+import ru.michawest.itmo.lab_5.exceptions.ParameterException;
 
 import java.util.Scanner;
+
+import static ru.michawest.itmo.lab_5.inputManager.DateConverter.parseLocalDate;
 
 public class InputAll {
     private final Scanner scanner;
 
-    public InputAll(Scanner sc) {
+    public InputAll(Scanner sc){
         this.scanner = sc;
         scanner.useDelimiter("\n");
     }
 
-    public Scanner getScanner() {
+    public Scanner getScanner(){
         return scanner;
     }
 
-    public CommandWrapper readCommand() {
+    public CommandWrapper readCommand(){
         String command = scanner.nextLine();
-        if (command.contains(" ")) {
-            String[] arr = command.split(" ", 2);
+        if (command.contains(" ")){
+            String[] arr = command.split(" ",2);
             command = arr[0];
             String arg = arr[1];
-            return new CommandWrapper(command, arg);
+            return new CommandWrapper(command,arg);
         } else {
             return new CommandWrapper(command);
         }
@@ -39,12 +42,12 @@ public class InputAll {
         Color hairColor = readHairColor();
         Country nationality = readNationality();
         Location location = readLocation();
-        return new Person(name, coordinates, createTime, height, weight, hairColor, nationality, location);
+        return new Person(name, coordinates, createTime, height, weight, hairColor, nationality, location );
     }
 
     public String readName() throws EmptyStringException {
         String s = scanner.nextLine().trim();
-        if (s.isEmpty()) {
+        if (s.isEmpty()){
             throw new EmptyStringException();
         }
         return s;
@@ -61,82 +64,83 @@ public class InputAll {
     public float readXCoordinate() throws InvalidNumberException {
         String s = scanner.nextLine().trim();
         float x;
-        try {
+        try{
             x = Float.parseFloat(s);
-        } catch (NumberFormatException e) {
+        }catch(NumberFormatException e){
             throw new InvalidNumberException();
         }
-        if (x > -119) {
+        if(x>-119) {
             return x;
-        } else {
+        }else{
             throw new InvalidNumberException("x coordinate should be more than -119");
         }
     }
 
-    public float readYCoordinate() throws InvalidNumberException {
+    public float readYCoordinate() throws InvalidNumberException{
         String s = scanner.nextLine().trim();
         float y;
-        try {
+        try{
             y = Float.parseFloat(s);
-        } catch (NumberFormatException e) {
+        }catch(NumberFormatException e){
             throw new InvalidNumberException();
         }
-        if (y > -119) {
+        if(y>-119) {
             return y;
-        } else {
+        }else{
             throw new InvalidNumberException("y coordinate should be more than -119");
         }
     }
 
-    public java.time.LocalTime readCreateTime() throws InvalidDateFormatException {
+    public java.time.LocalTime readCreateTime() throws InvalidDateFormatException{
         String s = scanner.nextLine().trim();
-        if (s.equals("")) {
+        if(s.equals("")){
             return null;
-        } else {
+        }
+        else{
             return DateConverter.parseLocalDate(s);
         }
     }
 
     public double readHeight() throws InvalidNumberException {
         double height;
-        try {
+        try{
             height = Double.parseDouble(scanner.nextLine().trim());
-        } catch (NumberFormatException e) {
+        }catch(NumberFormatException e){
             throw new InvalidNumberException();
         }
-        if (height > 0) {
+        if(height>0){
             return height;
-        } else {
+        }else{
             throw new InvalidNumberException("Height should be more than 0");
         }
     }
 
-    public long readWeight() throws InvalidNumberException {
+    public long readWeight() throws InvalidNumberException{
         long weight;
-        try {
+        try{
             weight = Long.parseLong(scanner.nextLine().trim());
-        } catch (NumberFormatException e) {
+        }catch(NumberFormatException e){
             throw new InvalidNumberException();
         }
-        if (weight > 0) {
+        if(weight>0){
             return weight;
-        } else {
+        }else{
             throw new InvalidNumberException("Weight should be more than 0");
         }
     }
 
     public Color readHairColor() throws InvalidEnumException {
-        try {
+        try{
             return Color.valueOf(scanner.nextLine().trim());
-        } catch (IllegalArgumentException e) {
+        } catch(IllegalArgumentException e){
             throw new InvalidEnumException();
         }
     }
 
     public Country readNationality() throws InvalidEnumException {
-        try {
+        try{
             return Country.valueOf(scanner.nextLine().trim());
-        } catch (IllegalArgumentException e) {
+        } catch(IllegalArgumentException e){
             throw new InvalidEnumException();
         }
     }
@@ -146,30 +150,30 @@ public class InputAll {
         long y = readYLocation();
         double z = readZLocation();
         Location location = new Location();
-        location.addLocation(x, y, z);
+        location.addLocation(x,y,z);
         return location;
     }
 
     public double readXLocation() throws InvalidNumberException {
-        try {
+        try{
             return Double.parseDouble(scanner.nextLine().trim());
-        } catch (NumberFormatException e) {
+        }catch(NumberFormatException e){
             throw new InvalidNumberException();
         }
     }
 
-    public long readYLocation() throws InvalidNumberException {
-        try {
+    public long readYLocation() throws InvalidNumberException{
+        try{
             return Long.parseLong(scanner.nextLine().trim());
-        } catch (NumberFormatException e) {
+        }catch(NumberFormatException e){
             throw new InvalidNumberException();
         }
     }
 
-    public double readZLocation() throws InvalidNumberException {
-        try {
+    public double readZLocation() throws InvalidNumberException{
+        try{
             return Long.parseLong(scanner.nextLine().trim());
-        } catch (NumberFormatException e) {
+        }catch(NumberFormatException e){
             throw new InvalidNumberException();
         }
     }

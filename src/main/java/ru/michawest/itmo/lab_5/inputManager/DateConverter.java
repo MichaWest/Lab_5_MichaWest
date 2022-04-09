@@ -1,10 +1,10 @@
 package ru.michawest.itmo.lab_5.inputManager;
 
-import ru.michawest.itmo.lab_5.exceptions.InvalidDateFormatException;
-
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+import ru.michawest.itmo.lab_5.exceptions.InvalidDateFormatException;
 /**
  * Provides methods to convenient conversion between String and Date
  */
@@ -15,21 +15,21 @@ public class DateConverter {
     /**
      * convert LocalDate to String
      */
-    public static String dateToString(LocalTime date) {
+    public static String dateToString(LocalTime date){
         return date.format(localDateFormatter);
     }
 
     /**
      * convert LocalDate to String
-     *
      * @param s
      * @return
      * @throws InvalidDateFormatException
      */
-    public static LocalTime parseLocalDate(String s) throws InvalidDateFormatException {
-        try {
+    public static LocalTime parseLocalDate(String s) throws InvalidDateFormatException{
+        try{
             return LocalTime.parse(s, localDateFormatter);
-        } catch (java.time.format.DateTimeParseException e) {
+        }
+        catch(java.time.format.DateTimeParseException e){
             throw new InvalidDateFormatException();
         }
     }

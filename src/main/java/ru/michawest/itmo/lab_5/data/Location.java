@@ -5,22 +5,22 @@ public class Location {
     private Long y;
     private Double z;
 
-    public boolean addLocation(double nx, long ny, double nz) {
+    public boolean addLocation(double nx, long ny, double nz){
         this.x = nx;
         this.y = ny;
         this.z = nz;
         return true;
     }
 
-    public double getX() {
+    public double getX(){
         return x;
     }
 
-    public long getY() {
+    public long getY(){
         return y;
     }
 
-    public double getZ() {
+    public double getZ(){
         return z;
     }
 }

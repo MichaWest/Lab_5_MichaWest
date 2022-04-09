@@ -5,9 +5,9 @@ import ru.michawest.itmo.lab_5.exceptions.*;
 
 import java.util.Scanner;
 
-public class ConsoleInput extends InputAll {
+public class ConsoleInput extends InputAll{
 
-    public ConsoleInput() {
+    public ConsoleInput(){
         super(new Scanner(System.in));
         getScanner().useDelimiter("\n");
     }
@@ -22,7 +22,7 @@ public class ConsoleInput extends InputAll {
         Color hairColor = readHairColor();
         Country nationality = readNationality();
         Location location = readLocation();
-        return new Person(name, coordinates, createTime, height, weight, hairColor, nationality, location);
+        return new Person(name, coordinates, createTime, height, weight, hairColor, nationality, location );
     }
 
     public String readName() throws EmptyStringException {
@@ -46,7 +46,7 @@ public class ConsoleInput extends InputAll {
     }
 
     @Override
-    public float readYCoordinate() throws InvalidNumberException {
+    public float readYCoordinate() throws InvalidNumberException{
         System.out.print("enter y coordinate: ");
         return super.readYCoordinate();
     }
@@ -64,7 +64,7 @@ public class ConsoleInput extends InputAll {
     }
 
     @Override
-    public long readWeight() throws InvalidNumberException {
+    public long readWeight() throws InvalidNumberException{
         System.out.print("enter weight: ");
         return super.readWeight();
     }
@@ -87,7 +87,7 @@ public class ConsoleInput extends InputAll {
         long y = readYLocation();
         double z = readZLocation();
         Location location = new Location();
-        location.addLocation(x, y, z);
+        location.addLocation(x,y,z);
         return location;
     }
 
@@ -98,13 +98,13 @@ public class ConsoleInput extends InputAll {
     }
 
     @Override
-    public long readYLocation() throws InvalidNumberException {
+    public long readYLocation() throws InvalidNumberException{
         System.out.print("enter y location: ");
         return super.readYLocation();
     }
 
     @Override
-    public double readZLocation() throws InvalidNumberException {
+    public double readZLocation() throws InvalidNumberException{
         System.out.print("enter z location: ");
         return super.readZLocation();
     }

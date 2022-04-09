@@ -1,63 +1,51 @@
 package ru.michawest.itmo.lab_5.collection;
 
-import ru.michawest.itmo.lab_5.data.Color;
-import ru.michawest.itmo.lab_5.data.Country;
-import ru.michawest.itmo.lab_5.data.Person;
-import ru.michawest.itmo.lab_5.exceptions.ParameterException;
+import ru.michawest.itmo.lab_5.data.*;
+import ru.michawest.itmo.lab_5.exceptions.*;
 import ru.michawest.itmo.lab_5.inputManager.DateConverter;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Vector;
+import java.util.*;
 
 public class PersonCollection {
-    private final LocalTime createTime;
     private Vector<Person> collection;
+    private final java.time.LocalTime createTime;
     private HashSet<Integer> existId;
     private boolean order;
 
-    public PersonCollection() {
+    public PersonCollection(){
         createTime = LocalTime.now();
         order = true;
-        if (collection == null) {
+        if(collection==null){
             collection = new Vector<>();
         }
     }
 
-    public boolean deserializeCollection(String xml) {
+    public boolean deserializeCollection(String xml){
         ArrayList<String[]> col;
-        try {
-            if (xml == null || xml.isEmpty()) {
+        try{
+            if(xml==null||xml.isEmpty()){
                 collection = new Vector<>();
-            } else {
+            }else{
                 Xml xmlParser = new Xml();
                 col = xmlParser.readFile(xml);
-                for (String[] parameter : col) {
+                for(String[] parameter : col){
                     Person man = new Person();
                     ReadParameter getParameter = new ReadParameter();
                     man.addId(this.generateNextId());
-                    if (!man.addName(parameter[0])) throw new ParameterException("Указаеа пустая строка");
-                    if (!man.addId(getParameter.convertToId(parameter[1])))
-                        throw new ParameterException("Указаеа пустая строка");
-                    if (!man.addCreationDate(getParameter.convertToCreationTime(parameter[3])))
-                        throw new ParameterException("Время указано неправльно");
-                    if (!man.addHeight(getParameter.convertToHeight(parameter[4])))
-                        throw new ParameterException("Высота указана неправильно");
-                    if (!man.addWeight(getParameter.convertToWeight(parameter[5])))
-                        throw new ParameterException("Вес указан неправильно");
-                    if (!man.addColor(parameter[6]))
-                        throw new ParameterException("Цвет указан неправильно. Существуют только слудующие цвета: Red, Yellow, Brown");
-                    if (!man.addNationality(parameter[7]))
-                        throw new ParameterException("Национальность указана неправильно. Существуют только следующие национальности: USA, China, Vatican, North_Korea, Japan");
-                    if (!man.addCoordinates(getParameter.convertToCX(parameter[9]), getParameter.convertToCY(parameter[10])))
-                        throw new ParameterException("Координаты указаны неправильно");
-                    if (!man.addLocation(getParameter.convertToLX(parameter[11]), getParameter.convertToLY(parameter[12]), getParameter.convertToLZ(parameter[13])))
-                        throw new ParameterException("Локация указана неправильно");
+                    if(!man.addName(parameter[0])) throw new ParameterException("Указаеа пустая строка");
+                    if(!man.addId(getParameter.convertToId(parameter[1]))) throw new ParameterException("Указаеа пустая строка");
+                    if(!man.addCreationDate(getParameter.convertToCreationTime(parameter[3]))) throw new ParameterException("Время указано неправльно");
+                    if(!man.addHeight(getParameter.convertToHeight(parameter[4]))) throw new ParameterException("Высота указана неправильно");
+                    if(!man.addWeight(getParameter.convertToWeight(parameter[5]))) throw new ParameterException("Вес указан неправильно");
+                    if(!man.addColor(parameter[6])) throw new ParameterException("Цвет указан неправильно. Существуют только слудующие цвета: Red, Yellow, Brown");
+                    if(!man.addNationality(parameter[7])) throw new ParameterException("Национальность указана неправильно. Существуют только следующие национальности: USA, China, Vatican, North_Korea, Japan");
+                    if(!man.addCoordinates(getParameter.convertToCX(parameter[9]), getParameter.convertToCY(parameter[10]))) throw new ParameterException("Координаты указаны неправильно");
+                    if(!man.addLocation(getParameter.convertToLX(parameter[11]), getParameter.convertToLY(parameter[12]), getParameter.convertToLZ(parameter[13]))) throw new ParameterException("Локация указана неправильно");
                     add(man, man.getId());
                 }
             }
-        } catch (ParameterException e) {
+        }catch(ParameterException e){
             System.out.println(e.getMessage());
             return false;
         }
@@ -65,33 +53,34 @@ public class PersonCollection {
     }
 
     private int generateNextId() {
-        if (collection.isEmpty()) {
+        if (collection.isEmpty()){
             existId = new HashSet<>();
             existId.add(1);
             return 1;
-        } else {
+        }
+        else {
             int id = collection.lastElement().getId() + 1;
-            if (existId.contains(id)) {
-                while (existId.contains(id)) id += 1;
+            if(existId.contains(id)){
+                while (existId.contains(id)) id+=1;
             }
             existId.add(id);
             return id;
         }
     }
 
-    public void clear() {
+    public void clear(){
         this.collection.clear();
     }
 
-    public String getInfo() {
-        return "Vector of Person, size: " + collection.size() + ", create time: " + DateConverter.dateToString(this.createTime);
+    public String getInfo(){
+        return "Vector of Person, size: "+collection.size()+", create time: "+ DateConverter.dateToString(this.createTime);
     }
 
-    public Vector<Person> getCollection() {
+    public Vector<Person> getCollection(){
         return collection;
     }
 
-    public String serializeCollection() {
+    public String serializeCollection(){
         String text = "<People>\n";
         Xml parse = new Xml();
         for (Person man : collection) {
@@ -101,28 +90,28 @@ public class PersonCollection {
         return text;
     }
 
-    public void add(Person p) {
+    public void add(Person p){
         add(p, generateNextId());
     }
 
-    public void add(Person p, int id) {
+    public void add(Person p, int id){
         p.addId(id);
-        if (collection.isEmpty()) {
+        if(collection.isEmpty()) {
             collection.add(p);
-        } else {
-            for (int i = 0; i < collection.size(); i++) {
-                if (order) {
-                    if (collection.elementAt(i).getWeight() > p.getWeight()) {
+        }else{
+            for(int i=0;i<collection.size();i++){
+                if(order){
+                    if(collection.elementAt(i).getWeight()>p.getWeight()){
                         collection.add(i, p);
                         break;
                     }
-                } else {
-                    if (collection.elementAt(i).getWeight() < p.getWeight()) {
+                }else{
+                    if(collection.elementAt(i).getWeight()<p.getWeight()){
                         collection.add(i, p);
                         break;
                     }
                 }
-                if (i == collection.size() - 1) {
+                if(i==collection.size()-1){
                     collection.add(p);
                     break;
                 }
@@ -130,13 +119,13 @@ public class PersonCollection {
         }
     }
 
-    public boolean checkId(int i) {
+    public boolean checkId(int i){
         return collection.contains(getById(i));
     }
 
-    public Person getById(int i) {
-        for (Person p : collection) {
-            if (p.getId() == i) {
+    public Person getById(int i){
+        for(Person p: collection){
+            if(p.getId() == i){
                 System.out.println(p.getName());
                 return p;
             }
@@ -144,71 +133,71 @@ public class PersonCollection {
         return null;
     }
 
-    public void removeById(int i) {
+    public void removeById(int i){
         System.out.println("removeById");
         collection.removeElement(getById(i));
     }
 
-    public void updateById(int id, Person newp) {
-        for (Person p : collection) {
-            if (p.getId() == id) {
+    public void updateById(int id, Person newp){
+        for (Person p : collection){
+            if (p.getId() == id){
                 newp.addId(id);
                 collection.set(collection.indexOf(getById(id)), newp);
-                System.out.println("element #" + id + " successfully updated");
+                System.out.println("element #"+ id +" successfully updated");
                 return;
             }
         }
     }
 
-    public void remove(int number) {
+    public void remove(int number){
         collection.remove(number);
     }
 
-    public Person minByWeight() {
+    public Person minByWeight(){
         Long minW;
         Person rp = null;
-        minW = collection.lastElement().getWeight();
-        for (Person p : collection) {
-            if (p.getWeight() <= minW) {
+        minW=collection.lastElement().getWeight();
+        for(Person p: collection){
+            if(p.getWeight()<=minW){
                 minW = p.getWeight();
-                rp = p;
+                rp =p;
             }
         }
         return rp;
     }
 
-    public PersonCollection groupByNationality(Country n) {
+    public PersonCollection groupByNationality(Country n){
         PersonCollection r = new PersonCollection();
-        for (Person p : collection) {
-            if (p.getNationality() == n) {
+        for(Person p :collection){
+            if(p.getNationality()==n){
                 r.add(p);
             }
         }
         return r;
     }
 
-    public String printCollection() {
-        String text = "";
-        for (Person p : collection) {
-            text = text + p.getId() + " " + p.getName() + "\n";
+    public String printCollection(){
+        String text ="";
+        for(Person p: collection){
+            text=text+p.getId()+" "+p.getName()+"\n";
         }
         return text;
     }
 
-    public int countByHairColor(Color c) {
+    public int countByHairColor(Color c){
         int count = 0;
-        for (Person p : collection) {
-            if (p.getHairColor() == c) {
+        for(Person p: collection){
+            if(p.getHairColor()==c){
                 count++;
             }
         }
         return count;
     }
 
-    public void reorder() {
+    public void reorder(){
         order = !order;
         Vector<Person> rcol = new Vector<>();
-        for (int i = collection.size() - 1; i >= 0; i--) {
+        for(int i= collection.size()-1;i>=0;i--){
             rcol.add(collection.elementAt(i));
         }
         collection = rcol;

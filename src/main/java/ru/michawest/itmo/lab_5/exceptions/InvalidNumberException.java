@@ -4,8 +4,7 @@ public class InvalidNumberException extends ParameterException {
     public InvalidNumberException(String message) {
         super(message);
     }
-
-    public InvalidNumberException() {
+    public InvalidNumberException(){
         super("invalid number format");
     }
 }
