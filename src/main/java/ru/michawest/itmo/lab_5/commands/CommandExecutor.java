@@ -13,7 +13,7 @@ public class CommandExecutor {
     private InputAll input;
     private final FileWorker fileWorker;
     private boolean run;
-    private final Stack<String> runFiles;
+    private static Stack<String> runFiles = new Stack<>();
     private final List<String> history;
     private String currentScriptFileName;
     private final String[] commands= {"help","info", "show", "add", "remove_by_id", "update_by_id", "clear", "save", "execute_script", "exit", "remove_first", "reorder", "history", "group_counting_by_nationality", "count_by_hair_color" };
@@ -22,7 +22,6 @@ public class CommandExecutor {
         this.collection = cManager;
         this.input = iManager;
         this.fileWorker = fManager;
-        runFiles = new Stack<>();
         history = new ArrayList<>();
     }
 
@@ -30,7 +29,7 @@ public class CommandExecutor {
         input = new ConsoleInput();
         run = true;
         while(run){
-            System.out.print("Enter command (enter help to get list command): ");
+            System.out.print("Введите команду (введиет help, чтобы получить список комманд): ");
             CommandWrapper cmd = input.readCommand();
             runCommand(cmd.getCom(), cmd.getArg());
         }
@@ -138,22 +137,23 @@ public class CommandExecutor {
 
     public class Help implements Command{
         public void run(String arg){
-            System.out.println("help : вывести справку по доступным командам" +
-                    "\ninfo : вывести в стандартный поток вывода информацию о коллекции (тип, дата инициализации, количество элементов и т.д." +
-                    "\nshow : вывести в стандартный поток вывода все элементы коллекции в строковом представлении" +
-                    "\nadd {element} : добавить новый элемент в коллекцию" +
-                    "\nupdate id {element} : обновить значение элемента коллекции, id которого равен заданному" +
-                    "\nremove_by_id id : удалить элемент из коллекции по его id" +
-                    "\nclear : очистить коллекцию" +
-                    "\nsave : сохранить коллекцию в файл" +
-                    "\nexecute_script file_name : считать и исполнить скрипт из указанного файла. В скрипте содержатся команды в таком же виде, в котором их вводит пользователь в интерактивном режиме." +
-                    "\nexit : завершить программу (без сохранения в файл)" +
-                    "\nremove_first : удалить первый элемент из коллекции" +
-                    "\nreorder : отсортировать коллекцию в порядке, обратном нынешнему" +
-                    "\nhistory : вывести последние 7 команд (без их аргументов)" +
-                    "\nmin_by_weight : вывести любой объект из коллекции, значение поля weight которого является минимальным" +
-                    "\ngroup_counting_by_nationality : сгруппировать элементы коллекции по значению поля nationality, вывести количество элементов в каждой группе" +
-                    "\ncount_by_hair_color hairColor : вывести количество элементов, значение поля hairColor которых равно заданному");
+            System.out.println(
+                "help : вывести справку по доступным командам\n"+
+                "info : вывести в стандартный поток вывода информацию о коллекции (тип, дата инициализации, количество элементов и т.д.)\n"+
+                "show : вывести в стандартный поток вывода все элементы коллекции в строковом представлении\n"+
+                "add {element} : добавить новый элемент в коллекцию\n"+
+                "update id {element} : обновить значение элемента коллекции, id которого равен заданному\n"+
+                "remove_by_id id : удалить элемент из коллекции по его id\n"+
+                "clear : очистить коллекцию\n"+
+                "save : сохранить коллекцию в файл\n"+
+                "execute_script file_name : считать и исполнить скрипт из указанного файла. В скрипте содержатся команды в таком же виде, в котором их вводит пользователь в интерактивном режиме.\n"+
+                "exit : завершить программу (без сохранения в файл)\n"+
+                "remove_first : удалить первый элемент из коллекции\n"+
+                "reorder : отсортировать коллекцию в порядке, обратном нынешнему\n"+
+                "history : вывести последние 7 команд (без их аргументов)\n"+
+                "min_by_weight : вывести любой объект из коллекции, значение поля weight которого является минимальным\n"+
+                "group_counting_by_nationality : сгруппировать элементы коллекции по значению поля nationality, вывести количество элементов в каждой группе\n"+
+                "count_by_hair_color hairColor : вывести количество элементов, значение поля hairColor которых равно заданному");
             history.add("help");
         }
     }
@@ -198,6 +198,7 @@ public class CommandExecutor {
             if (!collection.checkId(id)) throw new InvalidCommandArgumentException("нет такого id");
             collection.removeById(id);
             history.add("remove_by_id");
+            System.out.println("Элемент с id "+id+" успешно удален");
         }
     }
 
@@ -224,6 +225,7 @@ public class CommandExecutor {
         public void run(String arg){
             collection.clear();
             history.add("clear");
+            System.out.println("Коллекция очищена");
         }
     }
 
@@ -232,21 +234,25 @@ public class CommandExecutor {
             if (collection.getCollection().isEmpty()) System.out.println("collection is empty");
             if(!fileWorker.write(collection.serializeCollection())) throw new CommandException("cannot save collection");
             history.add("save");
+            System.out.println("Коллекция успешно сохранена");
         }
     }
 
     public class ExecuteScript implements Command{
         public void run(String arg) throws RecursiveException {
-            if(arg==null||arg.isEmpty()){
-                throw new MissedCommandArgumentException();
+            try {
+                if (arg == null || arg.isEmpty()) {
+                    throw new MissedCommandArgumentException();
+                }
+                if (runFiles.contains(arg)) throw new RecursiveException();
+                runFiles.push(arg);
+                CommandExecutor process = new CommandExecutor(collection, input, fileWorker);
+                process.fileMode(arg);
+                runFiles.pop();
+                history.add("execute_script");
+            } catch(RecursiveException e){
+                System.out.println(e.getMessage());
             }
-            if(runFiles.contains(arg)) throw new RecursiveException();
-            runFiles.push(currentScriptFileName);
-            CommandExecutor process = new CommandExecutor(collection, input, fileWorker);
-            process.fileMode(arg);
-            runFiles.pop();
-            System.out.println("successfully executed script " + arg);
-            history.add("execute_script");
         }
     }
 
@@ -270,6 +276,7 @@ public class CommandExecutor {
             if (collection.getCollection().isEmpty()) throw new EmptyCollectionException();
             collection.reorder();
             history.add("reorder");
+            System.out.println("Коллекция успешно пересортировалась");
         }
     }
 

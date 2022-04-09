@@ -1,4 +1,5 @@
 package ru.michawest.itmo.lab_5;
+
 import java.io.*;
 
 import ru.michawest.itmo.lab_5.commands.CommandExecutor;
@@ -12,10 +13,14 @@ public class Main {
         System.setOut(new PrintStream(System.out, true, "UTF-8"));
         FileWorker fileWorker = new FileWorker();
         PersonCollection personCollection = new PersonCollection();
-        String path = "MICHELLE";
-        fileWorker.setPath(path);
+        String path = "MICHELL";
+        try {
+            fileWorker.setPath(path);
+        }catch(NullPointerException e){
+            System.out.println(e.getMessage());
+        }
         if(!personCollection.deserializeCollection(fileWorker.read())){
-            System.out.println("In the fail is a error");
+            System.out.println("В файле ошибка");
             personCollection.clear();
         }
         InputAll console = new ConsoleInput();

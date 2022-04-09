@@ -4,6 +4,6 @@ package ru.michawest.itmo.lab_5.exceptions;
  */
 public class FileNotExistException extends FileException {
     public FileNotExistException(){
-        super("cannot find file");
+        super("не могу найти файл");
     }
 }
